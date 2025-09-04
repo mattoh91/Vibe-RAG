@@ -51,13 +51,7 @@ async def get_providers():
                 "id": "openrouter",
                 "name": "OpenRouter",
                 "requires_endpoint": False,
-                "default_models": ["anthropic/claude-sonnet-4", "openai/gpt-5", "x-ai/grok-4", "deepseek/deepseek-chat-v3.1", "google/gemini-2.5-flash"]
-            },
-            {
-                "id": "anthropic",
-                "name": "Anthropic Claude",
-                "requires_endpoint": False,
-                "default_models": ["claude-3-sonnet-20240229", "claude-3-haiku-20240307", "claude-3-opus-20240229"]
+                "default_models": ["openai/gpt-5", "x-ai/grok-4", "deepseek/deepseek-chat-v3.1", "google/gemini-2.5-flash"]
             }
         ]
     }

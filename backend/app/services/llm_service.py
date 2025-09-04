@@ -5,7 +5,6 @@ from abc import ABC, abstractmethod
 
 # LLM Client imports
 import openai
-import anthropic
 import httpx
 
 from app.models.llm_config import LLMConfig, LLMProvider
@@ -124,63 +123,7 @@ class OpenRouterClient(BaseLLMClient):
                 "message": f"Connection failed: {str(e)}"
             }
 
-class AnthropicClient(BaseLLMClient):
-    def __init__(self, config: LLMConfig):
-        self.config = config
-        self.client = anthropic.AsyncAnthropic(api_key=config.api_key)
-        self.model = config.model_name or "claude-3-sonnet-20240229"
-    
-    async def generate_response(
-        self, 
-        messages: List[Dict[str, str]], 
-        max_tokens: int = 1000,
-        temperature: float = 0.7
-    ) -> str:
-        try:
-            # Convert OpenAI format to Anthropic format
-            system_message = ""
-            anthropic_messages = []
-            
-            for msg in messages:
-                if msg["role"] == "system":
-                    system_message = msg["content"]
-                else:
-                    anthropic_messages.append({
-                        "role": msg["role"],
-                        "content": msg["content"]
-                    })
-            
-            response = await self.client.messages.create(
-                model=self.model,
-                max_tokens=max_tokens,
-                temperature=temperature,
-                system=system_message if system_message else None,
-                messages=anthropic_messages
-            )
-            
-            return response.content[0].text
-        except Exception as e:
-            logger.error(f"Anthropic generation failed: {e}")
-            raise
-    
-    async def test_connection(self) -> Dict[str, Any]:
-        try:
-            response = await self.client.messages.create(
-                model=self.model,
-                max_tokens=10,
-                messages=[{"role": "user", "content": "Hello"}]
-            )
-            return {
-                "success": True,
-                "model": self.model,
-                "message": "Connection successful"
-            }
-        except Exception as e:
-            return {
-                "success": False,
-                "model": self.model,
-                "message": f"Connection failed: {str(e)}"
-            }
+
 
 class LLMService:
     def __init__(self):
@@ -194,8 +137,6 @@ class LLMService:
                 self.current_client = AzureOpenAIClient(config)
             elif config.provider == LLMProvider.OPENROUTER:
                 self.current_client = OpenRouterClient(config)
-            elif config.provider == LLMProvider.ANTHROPIC:
-                self.current_client = AnthropicClient(config)
             else:
                 raise ValueError(f"Unsupported LLM provider: {config.provider}")
             
