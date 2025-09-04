@@ -5,7 +5,6 @@ from enum import Enum
 class LLMProvider(str, Enum):
     AZURE_OPENAI = "azure_openai"
     OPENROUTER = "openrouter"
-    ANTHROPIC = "anthropic"
 
 class LLMConfigRequest(BaseModel):
     provider: LLMProvider

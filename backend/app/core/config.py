@@ -35,7 +35,6 @@ class Settings(BaseSettings):
     AZURE_OPENAI_API_KEY: Optional[str] = None
     AZURE_OPENAI_ENDPOINT: Optional[str] = None
     OPENROUTER_API_KEY: Optional[str] = None
-    ANTHROPIC_API_KEY: Optional[str] = None
     
     class Config:
         env_file = ".env"
